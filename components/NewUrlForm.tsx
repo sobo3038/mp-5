@@ -22,13 +22,18 @@ export default function NewUrlForm() {
         e.preventDefault();
         setError("");
         try { //try to save alias and url to db
-            const savedAlias = await createNewUrl(alias, url);
-            const shortUrl = `${window.location.origin}/${savedAlias}`;
-            setShortened(shortUrl);
-        } catch (err: any) {
-            setError(err.message || "error");
+          const savedAlias = await createNewUrl(alias, url);
+          const shortUrl = `${window.location.origin}/${savedAlias}`;
+          setShortened(shortUrl);
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            setError(err.message);
+          } else {
+            setError("An unexpected error occurred");
+          }
         }
-    };
+      };
+      
 
     return (
         <form
