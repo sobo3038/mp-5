@@ -16,6 +16,11 @@ export default async function createNewUrl(alias: string, url: string): Promise<
         return null;
     }
 
+    const res = await fetch(url).catch(() => null);
+    if (!res || !res.ok) {
+        return null;
+    }
+
     await collection.insertOne({ alias, url }); //.insertOne from nextjs lab 
     return {
         success: true,
