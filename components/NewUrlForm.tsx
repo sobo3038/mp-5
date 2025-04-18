@@ -69,8 +69,8 @@ export default function NewUrlForm() {
         {/*sibmit button*/}
         <button
             type="submit"
-            className="bg-[#7b4f2c] text-white p-2 rounded"
-        >
+            className="bg-[#7b4f2c] text-white p-2 rounded hover:bg-[#5c3a21]"
+            >
             Shorten URL
         </button>
 
