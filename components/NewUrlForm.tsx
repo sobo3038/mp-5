@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import createNewUrl from "@/lib/createNewUrl";
+import { ShortenResult } from "@/types";
 
 export default function NewUrlForm() {
     const [alias, setAlias] = useState("");
@@ -21,19 +22,17 @@ export default function NewUrlForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-        try { //try to save alias and url to db
-          const savedAlias = await createNewUrl(alias, url);
-          const shortUrl = `${window.location.origin}/${savedAlias}`;
-          setShortened(shortUrl);
-        } catch (err: unknown) {
-          if (err instanceof Error) {
-            setError(err.message);
-          } else {
-            setError("An unexpected error occurred");
-          }
+        setShortened("");
+
+        const response: ShortenResult | null = await createNewUrl(alias, url);
+
+        if (!response) {
+            setError("alias may be taken or url is invalid.");
+            return;
         }
-      };
-      
+        const shortUrl = `${window.location.origin}/${response.alias}`;
+        setShortened(shortUrl);
+    };
 
     return (
         <form
@@ -89,4 +88,4 @@ export default function NewUrlForm() {
         {error && <p className=" text-red-600 ">Error: {error}</p>}
         </form>
     );
-    }
+}

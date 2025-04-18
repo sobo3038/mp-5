@@ -2,19 +2,24 @@
 
 "use server";
 import getCollection, { URLS_COLLECTION } from "@/lib/db";
+import { ShortenResult } from "@/types";
 
-export default async function createNewUrl(alias: string, url: string) {
+export default async function createNewUrl(alias: string, url: string): Promise<ShortenResult | null> {
     const collection = await getCollection(URLS_COLLECTION); //this connects to the mongodb url collection
 
     const exists = await collection.findOne({ alias }); //.findOne from nextjs lab
-    if (exists) throw new Error("Alias already taken");
+    if (exists) return null;
 
     try {
         new URL(url); 
     } catch {
-        throw new Error("Invalid URL");
+        return null;
     }
 
     await collection.insertOne({ alias, url }); //.insertOne from nextjs lab 
-    return alias;
+    return {
+        success: true,
+        alias,
+        url,
+    };
 }
